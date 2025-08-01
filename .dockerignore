@@ -1,0 +1,17 @@
+# .dockerignore
+
+# Exclude build artifacts
+**/bin
+**/obj
+
+# Exclude Docker-related files
+Dockerfile
+.dockerignore
+
+# Exclude source control files
+.git
+.gitignore
+
+# Exclude user-specific files
+*.user
+*.suo

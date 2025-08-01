@@ -1,22 +1,28 @@
+# (Keep your "base" stage as is)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
+# === REPLACE THE BUILD STAGE WITH THIS ===
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# copy solution and restore as distinct layers
-COPY MyApi/global.json ./
-COPY MyApi/MyApi.sln ./
-COPY MyApi/MyApi/*.csproj MyApi/
-RUN dotnet restore "./MyApi.sln"
+# Copy solution and project files
+COPY ["MyApi.sln", "global.json", "./"]
+COPY ["MyApi/MyApi.csproj", "MyApi/"]
 
-# copy everything else and publish
-COPY MyApi/. ./
-WORKDIR /src/MyApi
+# Restore dependencies separately for better caching
+RUN dotnet restore "MyApi.sln"
+
+# Copy the rest of the application source code into the correct sub-directory
+COPY . .
+RUN ls -R /src
+# Publish the project
+WORKDIR "/src/MyApi"
 RUN dotnet publish "MyApi.csproj" -c Release -o /app/publish --no-restore
 
+# === KEEP THE "final" STAGE AS IS ===
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
