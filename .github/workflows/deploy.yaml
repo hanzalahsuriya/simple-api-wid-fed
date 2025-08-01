@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  PROJECT_ID:
+  PROJECT_ID: carbide-pilot-330923
   GAR_LOCATION: us-central1 # e.g. us-central1
   SERVICE: my-app
   REGION: us-central1
