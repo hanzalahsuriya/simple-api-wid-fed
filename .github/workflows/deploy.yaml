@@ -36,6 +36,10 @@ jobs:
       - name: Who Am I
         run: gcloud auth list && gcloud config list
 
+      - name: Authenticate Docker with Artifact Registry
+        run: |
+          gcloud auth configure-docker ${GAR_LOCATION}-docker.pkg.dev
+
       # Build and push container image
       - name: Build and Push Container
         run: |-
